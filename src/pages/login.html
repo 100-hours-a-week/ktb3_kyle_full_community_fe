@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8"/>
+    <title>로그인</title>
+    <link rel="stylesheet" href="styles/login.css"/>
+    <link rel="stylesheet" href="styles/header.css"/>
+</head>
+<body>
+<div id="header"></div>
+<div class="container">
+    <div class="login-box">
+        <h2 class="login-title">로그인</h2>
+
+        <div class="input-wrapper"> <!-- 392 x 221을 감싸는 div -->
+            <label for="email">이메일</label>
+            <input type="text" id="email" placeholder="이메일을 입력하세요"/>
+            <p id="email-helper" class="helper-text"></p>
+
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" placeholder="비밀번호를 입력하세요"/>
+            <p id="password-helper" class="helper-text">* 비밀번호를 입력해주세요.</p>
+
+        </div>
+
+        <button id="login-button" class="login-btn" disabled>로그인</button> <!-- 383 x 37 -->
+
+        <button class="signup-btn" onclick="location.href = `http://localhost:3000/src/pages/signup.html`">회원가입</button> <!-- 68 x 30 -->
+    </div>
+</div>
+
+<script type="module">
+    import {API_BASE_URL} from "../utils/config.js";
+    import api from "../utils/Api.js";
+    import { Dropdown } from "../utils/Dropdown.js";
+
+    const inputState = {
+        email: {
+            value: "", valid: false
+        },
+        password: {
+            value: "", valid: false
+        }
+    }
+
+    const validationEmail = async (emailValue) => {
+        const success = (message) => ({pass: true, message: message});
+        const fail = (message) => ({pass: false, message: message});
+        const emailState = inputState['email'];
+
+        if (emailValue.length <= 0) {
+            emailState['valid'] = false;
+            return fail("*올바른 이메일 주소 형식을 입력해주세요.");
+        }
+
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+        if (!emailRegex.test(emailValue)) {
+            emailState['valid'] = false;
+            return fail("*올바른 이메일 주소 형식을 입력해주세요.");
+        }
+
+        emailState['valid'] = true;
+        emailState['value'] = emailValue;
+        return success("");
+    }
+
+    const authenticate = ({email, password}) => {
+        return api.post(`/auth/sessions`, {
+            email: email.value,
+            password: password.value
+        })
+            .then(res => res.json())
+            .then(json => json.success)
+    }
+
+    const login = document.getElementById("login-button");
+    login.onclick = async () => {
+        const result = await authenticate(inputState);
+        if (result === true) {
+            location.href = "http://localhost:3000/src/pages/post-list.html";
+        } else {
+            const helper = document.getElementById("password-helper");
+            helper.innerText = "*아이디 또는 비밀번호를 확인해주세요."
+        }
+    }
+
+    const validationPassword = (passwordValue) => {
+        const success = (message) => ({pass: true, message: message});
+        const fail = (message) => ({pass: false, message: message});
+        const passwordState = inputState['password'];
+
+        if (passwordValue.length <= 0) {
+            passwordState['valid'] = false;
+            return fail("*비밀번호를 입력해주세요");
+        }
+
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[~!@#$%^&*(),.?":{}|<>])[A-Za-z\d~!@#$%^&*(),.?":{}|<>]{8,20}$/;
+        if (!passwordRegex.test(passwordValue)) {
+            passwordState['valid'] = false;
+            return fail("*비밀번호는 8자 이상, 20자 이하이며, 대문자, 소문자, 숫자, 특수문자를 각각 최소 1개 포함해야합니다.");
+        }
+
+        passwordState['valid'] = true;
+        passwordState['value'] = passwordValue;
+        return success("");
+    }
+
+    const updateHelperText = (helper, {pass, message}) => {
+        helper.innerText = message;
+    }
+
+    const checkInputState = () => {
+        return Object.values(inputState).every(field => field.valid === true);
+    }
+
+    const applyBlurEvent = (inputId, helperId, validation) => {
+        const input = document.getElementById(inputId);
+        const helper = document.getElementById(helperId);
+
+        input.addEventListener('blur', async () => {
+            const result = await validation(input.value);
+            updateHelperText(helper, result);
+            if(checkInputState()) {
+                const loginButton = document.querySelector(".login-btn");
+                loginButton.classList.add("valid")
+                loginButton.disabled = false;
+            }
+        })
+    }
+
+    applyBlurEvent("email", "email-helper", validationEmail);
+    applyBlurEvent("password", "password-helper", validationPassword);
+
+    fetch("/src/components/header.html")
+        .then(res => res.text())
+        .then(data => {
+            document.getElementById("header").innerHTML = data;
+            const headerProfile = document.querySelector(".header-profile-container");
+            headerProfile.classList.add("disable");
+        });
+</script>
+</body>
+</html>

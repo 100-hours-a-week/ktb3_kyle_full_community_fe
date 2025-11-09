@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 상세 조회</title>
+    <link rel="stylesheet" href="/src/pages/styles/post-detail.css"/>
+    <link rel="stylesheet" href="/src/pages/styles/header.css"/>
+    <link rel="stylesheet" href="/src/components/styles/modal.css">
+    <link rel="stylesheet" href="/src/components/styles/comment.css">
+</head>
+<body>
+<div id="header"></div>
+<div class="post-detail-container">
+    <div id="modal"></div>
+    <div id="post-detail"></div>
+
+    <!-- 6. 댓글 입력 영역 -->
+    <div class="comment-section">
+        <textarea id="comment" class="comment-input" placeholder="댓글을 남겨주세요!"></textarea>
+        <div class="comment-bottom">
+            <button id="comment-submit" class="comment-submit-btn" disabled>댓글 등록</button>
+        </div>
+    </div>
+</div>
+
+<div id="comment-list" class="comment-list"></div>
+<div id="observer" class="observer"></div>
+
+<script type="module">
+    import api from "../utils/Api.js";
+    import { GOOGLE_STORAGE_URL } from "../utils/config.js";
+    import { Modal } from "../components/Modal.js";
+    import { Comment } from "../components/Comment.js";
+    import { PostDetail } from "../components/PostDetail.js";
+    import { Dropdown } from "../utils/Dropdown.js";
+
+    const params = new URLSearchParams(window.location.search);
+    const postId = params.get("postId");
+
+    const createComment = async (content) => {
+        const result = await api.post(`/posts/${postId}/comments`, {
+            content: content
+        })
+            .then(() => location.reload());
+    }
+
+    const updateComment = async ({ commentId, content }) => {
+        await api.patch(`/posts/${postId}/comments/${commentId}`, {
+            content: content
+        })
+            .then(() => location.reload());
+    }
+
+    const deleteComment = async (commentId) => {
+        await api.delete(`/posts/${postId}/comments/${commentId}`)
+            .then(() => location.reload());
+    }
+
+    const deletePost = async () => {
+        await api.delete(`/posts/${postId}`)
+            .then(() => location.href = "http://localhost:3000/src/pages/post-list.html");
+    }
+
+    const comment = document.getElementById("comment");
+    const commentSubmit = document.getElementById("comment-submit");
+    commentSubmit.onclick = (e) => {
+        createComment(comment.value);
+    }
+    comment.oninput = (event) => {
+        const commentButton = document.querySelector(".comment-submit-btn");
+        const submitActive = event.target.value.length !== 0;
+        commentButton.classList.toggle("active", submitActive);
+        commentButton.disabled = !submitActive;
+    }
+
+    const showModal = ({ title, text }, confirmAction) => {
+        const modal = document.getElementById("modal");
+        modal.innerHTML = Modal(title, text);
+
+        const cancelButton = document.querySelector(".cancel-btn");
+        cancelButton.onclick = () => closeModal();
+        document.body.classList.add("modal-open");
+
+        const confirmButton = document.querySelector(".confirm-btn");
+        confirmButton.onclick = () => {
+            confirmAction();
+        }
+    }
+
+    const closeModal = () => {
+        const modal = document.getElementById("modal");
+        modal.innerHTML = "";
+        document.body.classList.remove("modal-open");
+    }
+
+    const changeToCommentUpdate = (commentId) => {
+        commentSubmit.innerText = "댓글 수정";
+        commentSubmit.onclick = () => {
+            updateComment({ commentId: commentId, content: comment.value });
+        };
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    const addLikeEvent = (postLike) => {
+        const likeButton = document.getElementById("like-count");
+        likeButton.onclick = async () => {
+            const path = `/posts/${postId}/like`;
+            const result = postLike["liked"] ?
+                await api.delete(path).then((res) => res.json()) :
+                await api.post(path).then((res) => res.json());
+            if (result.success) {
+                location.reload();
+            }
+        }
+    }
+
+    const addDeletePostEvent = () => {
+        const deleteButton = document.getElementById("delete-button");
+        deleteButton.onclick = () => showModal({
+            title: "게시글을 삭제하시겠습니까?",
+            text: "삭제한 내용은 복구할 수 없습니다."
+        }, () => deletePost());
+    }
+
+    const addUpdatePostEvent = () => {
+        const editButton = document.getElementById("edit-button");
+        editButton.onclick = () => location.href = `http://localhost:3000/src/pages/post-update.html?postId=${postId}`;
+    }
+
+    const addImageSlider = (images) => {
+        let currentIndex = 0;
+        const track = document.getElementById('image-track');
+        const counter = document.getElementById('image-counter');
+
+        images.forEach((image) => {
+            const div = document.createElement('div');
+            div.classList.add('slide-image');
+            div.style.backgroundImage = `url(${GOOGLE_STORAGE_URL}/${image.postImagePath})`;
+            track.appendChild(div);
+        });
+
+        counter.textContent = `${currentIndex + 1} / ${images.length}`;
+
+        function moveSlide(index) {
+            const total = images.length;
+            if (index < 0) currentIndex = total - 1;
+            else if (index >= total) currentIndex = 0;
+            else currentIndex = index;
+
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+            counter.textContent = `${currentIndex + 1} / ${images.length}`;
+        }
+
+        document.querySelector('.left-btn').addEventListener('click', () => {
+            moveSlide(currentIndex - 1);
+        });
+        document.querySelector('.right-btn').addEventListener('click', () => {
+            moveSlide(currentIndex + 1);
+        });
+    }
+
+    const getPostDetail = async () => {
+        const [postLike, postDetail] = await Promise.all([
+            api.get(`/posts/${postId}/like`)
+                .then((res) => res.json())
+                .then((json) => json.data),
+            api.get(`/posts/${postId}`)
+                .then((res) => res.json())
+                .then((json) => json.data)
+        ]);
+
+        document.getElementById("post-detail").innerHTML = PostDetail(postLike, postDetail);
+
+        addDeletePostEvent();
+        addUpdatePostEvent();
+        addLikeEvent(postLike);
+        addImageSlider(postDetail.imagePaths)
+    }
+    getPostDetail();
+
+    const observer = new IntersectionObserver((entries) => {
+        console.log("observe")
+        if (entries[0].intersectionRatio <= 0) return;
+
+        getCommentList(5);
+    });
+    observer.observe(document.getElementById("observer"));
+
+    let lastCommentId = 0;
+    const getCommentList = async (limit) => {
+        const path = lastCommentId === 0 ?
+            `/posts/${postId}/comments?limit=${limit}` :
+            `/posts/${postId}/comments?limit=${limit}&lastCommentId=${lastCommentId}`;
+
+        const commentList = await api.get(path)
+            .then((res) => res.json())
+            .then((json) => json.data);
+
+        console.log(commentList);
+
+        if (commentList.length === 0) {
+            observer.disconnect();
+        }
+
+        const commentListHTML = commentList
+            .map(comment => {
+                lastCommentId = comment.id;
+                return Comment(comment);
+            })
+            .join("");
+
+        document.getElementById("comment-list").innerHTML += commentListHTML;
+        document.addEventListener('click', (e) => {
+            if (!e.target.classList.contains("comment-btn")) return;
+
+            const commentId = e.target.closest(".comment-item").id;
+            e.target.classList.contains("edit-btn") ?
+                changeToCommentUpdate(commentId) :
+                showModal({
+                    title: "댓글을 삭제하시겠습니까?",
+                    text: "삭제한 내용은 복구할 수 없습니다."
+                }, () => deleteComment(commentId));
+        })
+    }
+
+    fetch("/src/components/header.html")
+        .then(res => res.text())
+        .then(data => {
+            document.getElementById("header").innerHTML = data;
+            Dropdown();
+        });
+</script>
+</body>
+</html>

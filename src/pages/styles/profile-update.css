@@ -1,0 +1,193 @@
+/* 전체 화면 정렬 */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background-color: #f6f6f9;
+}
+
+/* 상단 제목 */
+.title {
+    position: absolute;
+    top: 20px;
+    font-size: 40px;
+    font-weight: 400;
+}
+
+/* 로그인 박스 전체 */
+.profile-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+/* '로그인' 텍스트 (83 x 38 정도 느낌) */
+.profile-title {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.image-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-upload {
+    width: 149px;
+    height: 149px;
+    border-radius: 50%;
+    background-color: #C4C4C4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.image-upload.has-image {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: none;
+}
+
+.image-upload.has-image::after {
+    display: none;
+}
+
+.input-wrapper {
+    width: 392px;
+    border-radius: 6px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+}
+
+.input-wrapper label {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.input-wrapper input {
+    width: 355px;
+    height: 33px;
+    line-height: 33px;
+    box-sizing: border-box;
+    padding: 8px;
+    border: 1px solid #000000;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+/* 변경 버튼 */
+.profile-edit-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 8px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.6); /* 투명한 검정 */
+    border: 2px solid white;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.profile-edit-btn:hover {
+    background-color: #e9e9e9;
+    color: white;
+}
+
+.email-box {
+    font-size: 14px;
+    font-weight: 400;
+    margin: 16px 0 16px 0;
+}
+
+.helper-text {
+    font-size: 12px;
+    color: #FF0000;
+    margin-top: 4px; /* 거의 붙도록 최소 간격 */
+    margin-bottom: 8px; /* 다음 요소와는 간격 확보 */
+    overflow: visible;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.helper-text.valid {
+    color: green;
+}
+
+.update-btn {
+    width: 361px;
+    height: 37px;
+    background-color: #ACA0EB;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.update-btn.valid {
+    background-color: #7F6AEE;
+}
+
+.withdraw-btn {
+    width: 346px;
+    height: 42px;
+    margin-top: 5px;
+    border: 1px solid #8a6cf5;
+    background-color: transparent;
+    color: black;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.toast {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 102px;
+    height: 46px;
+    background-color: #aca0eb;
+    color: white;
+    font-size: 18px;
+    font-weight: 400;
+    text-align: center;
+    line-height: 46px;
+
+    border-radius: 23px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 1000;
+}
+
+.toast.show {
+    opacity: 1;
+    visibility: visible;
+}

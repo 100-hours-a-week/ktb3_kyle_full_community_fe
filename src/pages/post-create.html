@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 작성</title>
+    <link rel="stylesheet" href="/src/pages/styles/post-create.css"/>
+    <link rel="stylesheet" href="/src/pages/styles/header.css"/>
+</head>
+<body>
+<div id="header"></div>
+<div class="post-container">
+    <h2 class="post-title">게시글 작성</h2>
+
+    <!-- 제목 -->
+    <div class="form-group">
+        <label class="label-text">제목*</label>
+        <input id="title" type="text" class="input-title" maxlength="26" placeholder="제목을 입력해주세요. (최대 26글자)">
+    </div>
+
+    <!-- 내용 -->
+    <div class="form-group">
+        <label class="label-text">내용*</label>
+        <textarea id="content" class="input-content" placeholder="내용을 입력해주세요."></textarea>
+        <p id="helper" class="helper-text">* 제목, 내용을 모두 작성해주세요.</p>
+    </div>
+
+    <!-- 이미지 -->
+    <div>
+        <label class="label-text">이미지</label>
+        <div class="image-input">
+            <input type="file" id="image-upload" accept="image/*" placeholder="파일을 선택새주세요." multiple>
+        </div>
+    </div>
+
+    <!-- 완료 버튼 -->
+    <button id="submit" class="submit-btn" disabled>완료</button>
+</div>
+<script type="module">
+    import { API_BASE_URL } from "../utils/config.js";
+    import { Dropdown } from "../utils/Dropdown.js";
+
+    const inputSate = {
+        title: "",
+        content: "",
+        images: []
+    };
+
+    const submit = document.getElementById("submit");
+    submit.onclick = async () => {
+        const result = await createPost(inputSate);
+        if (result === true) {
+            location.href = "http://localhost:3000/src/pages/post-list.html";
+        }
+    }
+
+    const imageInput = document.getElementById("image-upload");
+    imageInput.onchange = (event) => {
+        const newImages = Array.from(event.target.files);
+        if (newImages.length !== 0) inputSate["images"] = newImages;
+    }
+
+    const createPost = ({ title, content }) => {
+        const formData = new FormData();
+        formData.append(
+            "request",
+            new Blob([JSON.stringify({ title: title, content: content })], { type: "application/json" })
+        );
+
+        Object.values(inputSate.images).forEach(image => formData.append("images", image));
+        console.log(inputSate);
+
+        console.log(formData.get("images"));
+
+        return fetch(`${API_BASE_URL}/posts/image`, {
+            method: "POST",
+            credentials: "include",
+            body: formData
+        })
+            .then(res => res.json())
+            .then(json => json.success)
+    }
+
+    const checkInputState = () => {
+        const title = inputSate.title;
+        const content = inputSate.content;
+        return title.length !== 0 && content.length !== 0;
+    }
+
+    const applyBlurEvent = (inputId) => {
+        const input = document.getElementById(inputId);
+        const helper = document.getElementById("helper");
+
+        input.addEventListener('blur', async () => {
+            inputSate[inputId] = input.value;
+            const submitButton = document.querySelector(".submit-btn");
+            const result = checkInputState();
+            submitButton.classList.toggle("valid", result);
+            submitButton.disabled = !result;
+            helper.innerText = result ? "" : "* 제목, 내용을 모두 입력해주세요.";
+        })
+    }
+
+    applyBlurEvent("title");
+    applyBlurEvent("content");
+
+    fetch("/src/components/header.html")
+        .then(res => res.text())
+        .then(data => {
+            document.getElementById("header").innerHTML = data;
+            Dropdown();
+        });
+</script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+body {
+    margin: 104px 0 0 0;
+    padding: 0;
+    height: 100%;
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+/* 전체 박스 */
+.post-container {
+    width: 600px;
+    margin: 0 auto;
+    padding-top: 20px;
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+/* 제목 텍스트 (게시글 작성) */
+.post-title {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* 제목, 내용, 이미지 라벨 */
+.label-text {
+    font-size: 16px;
+    font-weight: 500;
+    display: block;
+    padding: 20px 10px;
+}
+
+/* 제목 input */
+.input-title {
+    width: 592px;
+    height: 40px;
+    border: none;
+    border-bottom: 1px solid #bfbfbf;
+    border-top: 1px solid #bfbfbf;
+    padding: 8px;
+    font-size: 14px;
+    outline: none;
+}
+
+.input-title::placeholder {
+    color: #838486;
+    font-weight: 700;
+}
+
+/* 내용 textarea */
+.input-content {
+    width: 592px;
+    height: 300px;
+    border: none;
+    border-top: 1px solid #bfbfbf;
+    border-bottom: 1px solid #bfbfbf;
+    padding: 10px;
+    resize: none;
+    outline: none;
+    font-size: 14px;
+}
+
+/* 이미지 입력 */
+.image-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 592px;
+    padding-left: 10px;
+}
+
+.image-input input {
+    cursor: pointer;
+}
+
+.helper-text {
+    font-size: 12px;
+    color: #FF0000;
+    margin-top: 4px; /* 거의 붙도록 최소 간격 */
+    margin-bottom: 8px; /* 다음 요소와는 간격 확보 */
+    overflow: visible;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* 완료 버튼 */
+.submit-btn {
+    width: 355px;
+    height: 33px;
+    background-color: #aca0eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+}
+
+.submit-btn.valid {
+    background-color: #7F6AEE;
+}

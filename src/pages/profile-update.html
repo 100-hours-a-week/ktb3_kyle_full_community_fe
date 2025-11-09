@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 정보 수정</title>
+    <link rel="stylesheet" href="/src/pages/styles/profile-update.css"/>
+    <link rel="stylesheet" href="/src/pages/styles/header.css"/>
+    <link rel="stylesheet" href="/src/components/styles/modal.css">
+</head>
+<body>
+<div id="header"></div>
+<div class="container">
+    <div id="modal"></div>
+    <div class="profile-box">
+        <h2 class="profile-title">회원정보수정</h2>
+
+        <div class="input-wrapper">
+            <label for="profile">프로필 사진*</label>
+            <div class="image-wrapper">
+                <div id="image-upload" class="image-upload">
+                    <input id="profile" type="file" accept="image/*" hidden>
+                    <button id="profile-edit-button" class="profile-edit-btn">변경</button>
+                </div>
+            </div>
+
+            <label for="email">이메일</label>
+            <div id="email" class="email-box"></div>
+
+            <label for="nickname">닉네임</label>
+            <input type="text" id="nickname" placeholder="닉네임을 입력하세요"/>
+            <p id="nickname-helper" class="helper-text"></p>
+        </div>
+
+        <button id="update-button" class="update-btn">수정하기</button>
+
+        <button id="withdraw-button" class="withdraw-btn">회원 탈퇴
+        </button>
+
+        <div id="toast" class="toast">수정완료</div>
+    </div>
+</div>
+<script type="module">
+    import api from "../utils/Api.js";
+    import { Dropdown } from "../utils/Dropdown.js";
+    import { Modal } from "../components/Modal.js";
+    import { GOOGLE_STORAGE_URL, API_BASE_URL } from "../utils/config.js";
+
+    const imageState = {
+        image: null
+    };
+
+    const profileImage = document.getElementById("profile");
+    const imageBox = document.querySelector(".image-upload");
+    const editButton = document.getElementById("profile-edit-button");
+    editButton.onclick = () => profileImage.click();
+
+    profileImage.onchange = (e) => {
+        const image = e.target.files[0];
+        if (!image) {
+            imageBox.classList.remove("has-image")
+            imageBox.style.backgroundImage = `none`;
+            return;
+        }
+
+        imageState["image"] = image;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imageBox.style.backgroundImage = `url(${e.target.result})`; // 이미지 표시
+        }
+        reader.readAsDataURL(image);
+        imageBox.classList.add('has-image');
+    }
+
+    const getUserProfile = async () => {
+        const user = await api.get(`/users/profile`)
+            .then((res) => res.json())
+            .then((json) => json.data);
+
+        const email = document.getElementById("email");
+        email.innerText = user.email;
+
+        const nickname = document.getElementById("nickname");
+        nickname.value = user.nickname;
+
+        if (user.profileImage !== null) {
+            const image = document.querySelector(".image-upload");
+            image.style.backgroundImage = `url("${GOOGLE_STORAGE_URL}/${user.profileImage}")`
+            image.classList.add("has-image");
+        }
+    }
+    getUserProfile();
+
+    const updateProfile = async () => {
+        const nickname = document.getElementById("nickname");
+        const helper = document.getElementById("nickname-helper");
+
+        if (nickname.value.length === 0) {
+            helper.innerText = "*닉네임을 입력해주세요."
+            return;
+        }
+
+        if (nickname.value.length > 10) {
+            helper.innerText = "*닉네임은 최대 10자 까지 작성 가능합니다."
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append(
+            "request",
+            new Blob([JSON.stringify({
+                nickname: nickname.value,
+                profileImage: "",
+            })], { type: "application/json" })
+        )
+        formData.append("image", imageState.image);
+
+        await fetch(`${API_BASE_URL}/users/profile`, {
+            method: "PATCH",
+            credentials: "include",
+            body: formData
+        })
+            .then((res) => res.json())
+            .then((json) => {
+                if (json.success) {
+                    const toast = document.getElementById("toast");
+                    helper.innerText = "";
+                    toast.classList.add("show");
+
+                    setTimeout(() => {
+                        toast.classList.remove("show");
+                        location.href = "http://localhost:3000/src/pages/post-list.html";
+                    }, 2000);
+                }
+                if (json.httpStatus === "CONFLICT") {
+                    helper.innerText = "*중복된 닉네임 입니다.";
+                }
+            })
+    }
+
+    const updateButton = document.getElementById("update-button");
+    updateButton.onclick = () => {
+        updateProfile();
+    }
+
+    const showModal = ({ title, text }, confirmAction) => {
+        const modal = document.getElementById("modal");
+        modal.innerHTML = Modal(title, text);
+
+        const cancelButton = document.querySelector(".cancel-btn");
+        cancelButton.onclick = () => closeModal();
+        document.body.classList.add("modal-open");
+
+        const confirmButton = document.querySelector(".confirm-btn");
+        confirmButton.onclick = () => {
+            confirmAction();
+        }
+    }
+
+    const closeModal = () => {
+        const modal = document.getElementById("modal");
+        modal.innerHTML = "";
+        document.body.classList.remove("modal-open");
+    }
+
+    const withdraw = () => {
+        api.delete(`/users`)
+            .then((res) => {
+                if (res.ok) {
+                    location.replace("http://localhost:3000/src/pages/login.html");
+                }
+            });
+    }
+
+    const withdrawButton = document.getElementById("withdraw-button");
+    withdrawButton.onclick = () => showModal({
+        title: "회원탈퇴 하시겠습니까?",
+        text: "작성된 게시글과 댓글은 삭제됩니다."
+    }, () => withdraw())
+
+    fetch("/src/components/header.html")
+        .then(res => res.text())
+        .then(data => {
+            document.getElementById("header").innerHTML = data;
+            Dropdown();
+        });
+</script>
+</body>
+</html>

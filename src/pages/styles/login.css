@@ -1,0 +1,108 @@
+/* 전체 화면 정렬 */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background-color: #f6f6f9;
+}
+
+/* 상단 제목 */
+.title {
+    position: absolute;
+    top: 20px;
+    font-size: 40px;
+    font-weight: 400;
+}
+
+/* 로그인 박스 전체 */
+.login-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+/* '로그인' 텍스트 (83 x 38 정도 느낌) */
+.login-title {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.input-wrapper {
+    width: 392px;
+    border-radius: 6px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+}
+
+.input-wrapper label {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.input-wrapper input {
+    width: 355px;
+    height: 33px;
+    line-height: 33px;
+    box-sizing: border-box;
+    padding: 8px;
+    border: 1px solid #000000;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+.helper-text {
+    font-size: 12px;
+    color: #FF0000;
+    margin-top: 4px; /* 거의 붙도록 최소 간격 */
+    margin-bottom: 8px; /* 다음 요소와는 간격 확보 */
+    overflow: visible;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.helper-text.valid {
+    color: green;
+}
+
+/* 보라색 로그인 버튼 (383 x 37) */
+.login-btn {
+    width: 361px;
+    height: 37px;
+    background-color: #ACA0EB;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.login-btn.valid {
+    background-color: #7F6AEE;
+}
+
+/* 하단 회원가입 버튼 (68 x 30) */
+.signup-btn {
+    width: 68px;
+    height: 30px;
+    margin-top: 5px;
+    border: 1px solid #8a6cf5;
+    background-color: transparent;
+    color: black;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+}
