@@ -2,15 +2,13 @@ body {
     margin: 104px 0 0 0;
     padding: 0;
     height: 100%;
-    font-family: "Noto Sans KR", sans-serif;
-    background-color: #F6F6F9;
+    font-family: "Pretendard", sans-serif;
     scroll-behavior: smooth;
 }
 
 .post-detail-container {
     width: 592px;
-    margin: 120px auto 75px auto;
-    font-family: "Noto Sans KR", sans-serif;
+    margin: 120px auto 60px auto;
 }
 
 /* 제목 */
@@ -30,7 +28,7 @@ body {
 .post-author {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .author-img {
@@ -53,21 +51,38 @@ body {
     color: #666;
 }
 
+.post-actions {
+    display: flex;
+    gap: 8px;
+}
+
 /* 수정·삭제 버튼 */
 .post-actions button {
-    width: 50px;
-    height: 27px;
-    padding: 2px 12px 2px 12px;
-    border: 1px solid #aca0eb;
-    border-radius: 8px;
+    /*width: 40px;*/
+    /*height: 30px;*/
+    /*padding: 2px 12px 2px 12px;*/
+    /*border: 1px solid #aca0eb;*/
+    /*border-radius: 8px;*/
+    /*font-size: 12px;*/
+    /*background-color: #f5f5f5;*/
+    /*cursor: pointer;*/
+    /*margin-left: 5px;*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 40px;
+    height: 35px;
+    border-radius: 6px;
     font-size: 12px;
-    background-color: #f5f5f5;
     cursor: pointer;
-    margin-left: 5px;
+    background-color: white;
+    border: 1px solid #E2E2E2; /* 연보라색 테두리 */
+    transition: all 0.15s ease;
 }
 
 .post-actions button:hover {
-    background-color: #f1edff;
+    background-color: #FFFBEE;
 }
 
 .post-actions button:active {
@@ -114,6 +129,105 @@ body {
     gap: 8px;
 }
 
+.post-stats2 {
+    display: flex;
+    flex-direction: row;
+    justify-items: center;
+    align-items: center;
+    margin: 0 0;
+    gap: 8px;
+
+    font-weight: 700;
+}
+
+.view-box {
+    width: 65px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: #F7F7F7;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+
+    color: #7F6AEE;
+}
+
+.view-box::before {
+    content: "";
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+
+    background-color: #7F6AEE;
+    mask: url("/src/assets/view.svg") no-repeat center;
+    mask-size: contain;
+}
+
+.comment-box {
+    width: 65px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: #F7F7F7;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+
+    color: #A2C9ED;
+}
+
+.comment-box::before {
+    content: "";
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+
+    background-color: #A2C9ED;
+    mask: url("/src/assets/comment.svg") no-repeat center;
+    mask-size: contain;
+}
+
+.like-box {
+    width: 65px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: #F7F7F7;
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+
+    color: #EC5062;
+}
+
+.like-box::before {
+    content: "";
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+
+    background-color: #EC5062;
+    mask: url("/src/assets/heart-empty.svg") no-repeat center;
+    mask-size: contain;
+}
+
+.like-box.liked.like-box::before {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+
+    background-color: #EC5062;
+    mask: url("/src/assets/heart.svg") no-repeat center;
+    mask-size: contain;
+}
+
 .stat-box {
     width: 116px;
     height: 77px;
@@ -142,10 +256,16 @@ body {
     background-color: #aca0eb;
 }
 
+.division-bar {
+    width: 100%;
+    height: 12px;
+    background-color: #F7F7F7;
+}
+
 /* 댓글 입력 */
 .comment-section {
     width: 595px;
-    margin-top: 20px;
+    margin-top: 15px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -163,6 +283,7 @@ body {
     border: 1px solid #ccc;
     font-size: 14px;
     resize: none;
+    outline: none;
 }
 
 .comment-bottom {
@@ -188,22 +309,85 @@ body {
     width: 138px;
     height: 39px;
     align-self: flex-end;
-    background-color: #ACA0EB;
-    color: white;
+    color: #B7B7B7;
+    background-color: #F7F7F7;
     border: none;
-    border-radius: 16px;
+    border-radius: 12px;
     cursor: pointer;
     font-weight: 700;
+    line-height: 24px;
+
+    display: flex;             /* flex 컨테이너 */
+    align-items: center;       /* 세로 중앙 정렬 */
+    justify-content: center;   /* 가로 중앙 정렬 */
+    gap: 8px;                  /* 아이콘과 텍스트 사이 간격 */
+}
+
+.comment-submit-btn::before {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+
+    /*background-image: url("/src/assets/send.svg"); !* SVG 경로 *!*/
+    /*background-repeat: no-repeat;*/
+    /*background-size: contain;*/
+    /*background-position: center;*/
+
+    transform: rotate(-45deg) translate(2px, -2px);
+    transform-origin: center;
+
+    background-color: #B7B7B7;
+    mask: url("/src/assets/send.svg") no-repeat center;
+    mask-size: contain;
 }
 
 .comment-submit-btn.active {
-    background-color: #7F6AEE;
-    transition: all 0.1s ease;
+    color: black;
+    background-color: #FFC700;
+}
+
+.comment-submit-btn.active::before {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+
+    transform: rotate(-45deg) translate(2px, -2px);
+    transform-origin: center;
+
+    background-color: black;
+    mask: url("/src/assets/send.svg") no-repeat center;
+    mask-size: contain;
 }
 
 .comment-submit-btn.active:active {
-    transform: scale(0.97); /* 살짝 작아지면서 눌리는 느낌 */
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) inset; /* 안으로 눌린 그림자 */
+    background-color: #ECAA00;
+    /*transform: scale(0.97); !* 살짝 작아지면서 눌리는 느낌 *!*/
+    /*box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) inset; !* 안으로 눌린 그림자 *!*/
+}
+
+.comment-info {
+    width: 592px;
+    margin: 0 auto;
+    padding: 12px 0 12px 24px;
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.comment-info img {
+    width: 20px;
+    height: 20px;
+    /*background-color: #D0D0D0;*/
+    /*mask: url('/src/assets/comment.svg') no-repeat center;*/
+    /*mask-size: contain;*/
+}
+
+.comment-info span {
+    font-size: 14px;
+    line-height: 18px;
 }
 
 .post-image-slider {
@@ -214,12 +398,14 @@ body {
     margin: 0 auto;
     overflow: hidden;
     background: #f0f0f0;     /* 이미지 없을 때 회색 박스처럼 보이도록 */
+    border-radius: 16px;
 }
 
 .image-wrapper {
     width: 100%;
     height: 100%;
     overflow: hidden;
+    border-radius: 16px;
 }
 
 .image-track {
@@ -244,6 +430,7 @@ body {
 .slide-image {
     min-width: 100%;
     height: 100%;
+    border-radius: 16px;
     background-size: cover;
     background-position: center;
 }
@@ -256,15 +443,46 @@ body {
     background-color: rgba(255, 255, 255, 0.6);
     border: none;
     font-size: 24px;
-    padding: 8px 12px;
+    padding: 6px 10px;
     cursor: pointer;
     border-radius: 50%;
     transition: background 0.2s;
     visibility: visible;
     z-index: 10;
 }
+
 .slide-btn:hover {
     background-color: rgba(255, 255, 255, 0.9);
 }
-.left-btn { left: 10px; }
-.right-btn { right: 10px; }
+
+.left-btn {
+    left: 10px;
+}
+.left-btn::before {
+    content: "";
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+
+    background-color: black;
+    mask: url("/src/assets/arrow.svg") no-repeat center;
+    mask-size: contain;
+}
+
+.right-btn {
+    right: 10px;
+}
+
+.right-btn::before {
+    content: "";
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+
+    transform: rotate(180deg);
+    transform-origin: center;
+
+    background-color: black;
+    mask: url("/src/assets/arrow.svg") no-repeat center;
+    mask-size: contain;
+}

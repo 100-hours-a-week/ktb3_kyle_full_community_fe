@@ -2,7 +2,7 @@ body {
     margin: 104px 0 0 0;
     padding: 0;
     height: 100%;
-    font-family: "Noto Sans KR", sans-serif;
+    font-family: "Pretendard", sans-serif;
 }
 
 /* 전체 박스 */
@@ -10,7 +10,7 @@ body {
     width: 600px;
     margin: 0 auto;
     padding-top: 20px;
-    font-family: "Noto Sans KR", sans-serif;
+    font-family: "Pretendard", sans-serif;
 }
 
 /* 제목 텍스트 (게시글 작성) */
@@ -34,11 +34,15 @@ body {
     width: 592px;
     height: 40px;
     border: none;
-    border-bottom: 1px solid #bfbfbf;
-    border-top: 1px solid #bfbfbf;
+    border-bottom: 2px solid #E2E2E2;
     padding: 8px;
     font-size: 14px;
     outline: none;
+    transition: border-color 0.3s;
+}
+
+.input-title:focus {
+    border-bottom: 2px solid #ECAA00;
 }
 
 .input-title::placeholder {
@@ -51,51 +55,103 @@ body {
     width: 592px;
     height: 300px;
     border: none;
-    border-top: 1px solid #bfbfbf;
-    border-bottom: 1px solid #bfbfbf;
+    border-bottom: 2px solid #E2E2E2;
     padding: 10px;
     resize: none;
     outline: none;
     font-size: 14px;
 }
 
-/* 이미지 입력 */
-.image-input {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 592px;
-    padding-left: 10px;
+.input-content::placeholder {
+    color: #838486;
+    font-weight: 700;
 }
 
-.image-input input {
-    cursor: pointer;
+.input-content:focus {
+    border-bottom: 2px solid #ECAA00;
 }
+/* 이미지 입력 */
+/*.image-input {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    gap: 10px;*/
+/*    width: 592px;*/
+/*    padding-left: 10px;*/
+/*}*/
+
+/*.image-input input {*/
+/*    cursor: pointer;*/
+/*}*/
 
 .helper-text {
-    font-size: 12px;
-    color: #FF0000;
+    font-size: 14px;
+    color: #CB3D0B;
     margin-top: 4px; /* 거의 붙도록 최소 간격 */
     margin-bottom: 8px; /* 다음 요소와는 간격 확보 */
+
     overflow: visible;
     white-space: nowrap;
     text-overflow: ellipsis;
+
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.helper-text::before {
+    content: "";
+    flex-shrink: 0;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-bottom: 3px;
+
+    background-image: url("/src/assets/warning-fill.svg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    vertical-align: middle;
+}
+
+.helper-text.valid {
+    color: #2B75CB;
+}
+
+.helper-text.valid::before {
+    content: "";
+    flex-shrink: 0;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-bottom: 3px;
+
+    background-image: url("/src/assets/check.svg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    vertical-align: middle;
 }
 
 /* 완료 버튼 */
 .submit-btn {
-    width: 355px;
-    height: 33px;
-    background-color: #aca0eb;
-    color: white;
+    width: 361px;
+    height: 50px;
+    background-color: #F7F7F7;
+    color: #B7B7B7;
     border: none;
-    border-radius: 6px;
+    border-radius: 12px;
     font-size: 15px;
+    font-weight: 700;
     cursor: pointer;
     display: block;
     margin: 20px auto;
 }
 
 .submit-btn.valid {
-    background-color: #7F6AEE;
+    color: #333333;
+    background-color: #FFC700;
+}
+
+.submit-btn.valid:active {
+    background-color: #ECAA00;
 }

@@ -1,9 +1,11 @@
 /* 전체 화면 정렬 */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendard.css");
+
 body, html {
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: "Noto Sans KR", sans-serif;
+    font-family: Pretendard, sans-serif;
 }
 
 .container {
@@ -12,7 +14,7 @@ body, html {
     align-items: center;
     justify-content: center;
     height: 100%;
-    background-color: #f6f6f9;
+    background-color: white;
 }
 
 /* 상단 제목 */
@@ -55,19 +57,34 @@ body, html {
 .input-wrapper input {
     width: 355px;
     height: 33px;
-    line-height: 33px;
-    box-sizing: border-box;
-    padding: 8px;
-    border: 1px solid #000000;
-    border-radius: 6px;
+    border: none;
     margin-top: 10px;
+    outline: none;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 24px;
+    ::placeholder {
+        color: #B7B7B7;
+    }
+}
+
+.input-box {
+    width: 355px;
+    height: 45px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #E2E2E2;
+    transition: border-color 0.3s;
+}
+
+.input-box.focus {
+    border-bottom: 2px solid #ECAA00;
 }
 
 .helper-text {
     font-size: 12px;
     color: #FF0000;
     margin-top: 4px; /* 거의 붙도록 최소 간격 */
-    margin-bottom: 8px; /* 다음 요소와는 간격 확보 */
+    margin-bottom: 15px; /* 다음 요소와는 간격 확보 */
     overflow: visible;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -80,29 +97,39 @@ body, html {
 /* 보라색 로그인 버튼 (383 x 37) */
 .login-btn {
     width: 361px;
-    height: 37px;
-    background-color: #ACA0EB;
-    color: white;
+    height: 50px;
+    background-color: #F7F7F7;
+    color: #B7B7B7;
     border: none;
-    border-radius: 5px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+    z-index: 3;
+}
+
+.login-btn.valid {
+    color: #333333;
+    background-color: #FFC700;
+}
+
+.login-btn.valid:active {
+    background-color: #ECAA00;
+}
+
+    /* 하단 회원가입 버튼 (68 x 30) */
+.signup-btn {
+    width: 361px;
+    height: 50px;
+    border: 1px solid #E2E2E2;
+    background-color: transparent;
+    color: black;
+    border-radius: 12px;
     cursor: pointer;
     font-size: 15px;
     font-weight: 700;
 }
 
-.login-btn.valid {
-    background-color: #7F6AEE;
-}
-
-/* 하단 회원가입 버튼 (68 x 30) */
-.signup-btn {
-    width: 68px;
-    height: 30px;
-    margin-top: 5px;
-    border: 1px solid #8a6cf5;
-    background-color: transparent;
-    color: black;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 13px;
+.signup-btn:active {
+    background-color: #F7F7F7;
 }

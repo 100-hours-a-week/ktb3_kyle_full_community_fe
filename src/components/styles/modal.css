@@ -71,17 +71,26 @@ body.modal-open {
 
 /* 취소 버튼 */
 .cancel-btn {
-    background-color: #333333;
-    color: #ffffff;
+    background-color: #FFFFFF;
+    color: #525252;
+    border: 1px solid #E2E2E2;
+}
+
+.cancel-btn:active {
+    background-color: #F7F7F7;
 }
 
 /* 확인 버튼 */
 .confirm-btn {
-    background-color: #c7b3f6;
+    background-color: #FFC700;
     color: #333333;
 }
 
-/* 버튼 눌림 효과 */
-.modal-btn:active {
-    transform: scale(0.98);
+.confirm-btn:active {
+    background-color: #ECAA00;
 }
+
+/* 버튼 눌림 효과 */
+/*.modal-btn:active {*/
+/*    transform: scale(0.98);*/
+/*}*/

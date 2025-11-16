@@ -3,7 +3,7 @@ body, html {
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: "Noto Sans KR", sans-serif;
+    font-family: "Pretendard", sans-serif;
 }
 
 .container {
@@ -12,7 +12,8 @@ body, html {
     align-items: center;
     justify-content: center;
     height: 100%;
-    background-color: #f6f6f9;
+    background-color: white;
+    margin-top: 120px;
 }
 
 /* 상단 제목 */
@@ -87,57 +88,144 @@ body, html {
 .input-wrapper label {
     font-size: 14px;
     font-weight: 700;
+    margin-top: 18px;
 }
 
 .input-wrapper input {
     width: 355px;
     height: 33px;
-    line-height: 33px;
+    border: none;
+    margin-top: 10px;
+    line-height: 24px;
     box-sizing: border-box;
     padding: 8px;
-    border: 1px solid #000000;
-    border-radius: 6px;
-    margin-top: 10px;
+    outline: none;
+    font-weight: 600;
+    font-size: 15px;
+    ::placeholder {
+        color: #B7B7B7;
+    }
+}
+
+.input-box {
+    width: 355px;
+    height: 45px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #E2E2E2;
+    transition: border-color 0.3s;
+}
+
+.input-box.focus {
+    border-bottom: 2px solid #ECAA00;
 }
 
 .helper-text {
-    font-size: 12px;
-    color: #FF0000;
+    font-size: 14px;
+    color: #CB3D0B;
+    padding: 5px 0;
     margin-top: 4px; /* 거의 붙도록 최소 간격 */
-    margin-bottom: 8px; /* 다음 요소와는 간격 확보 */
+
     overflow: visible;
     white-space: nowrap;
     text-overflow: ellipsis;
+    line-height: 1px;
+
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.helper-text::before {
+    content: "";
+    flex-shrink: 0;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-bottom: 3px;
+
+    background-image: url("/src/assets/warning-fill.svg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    vertical-align: middle;
+    /*background-color: #CB3D0B;*/
+    /*mask: url("/src/assets/warning-fill.svg") no-repeat center;*/
+    /*mask-size: contain;*/
 }
 
 .helper-text.valid {
-    color: green;
+    color: #2B75CB;
+}
+
+.helper-text.valid::before {
+    content: "";
+    flex-shrink: 0;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-bottom: 3px;
+
+    background-image: url("/src/assets/check.svg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    vertical-align: middle;
 }
 
 .signup-btn {
+    /*width: 361px;*/
+    /*height: 37px;*/
+    /*background-color: #ACA0EB;*/
+    /*color: white;*/
+    /*border: none;*/
+    /*border-radius: 5px;*/
+    /*cursor: pointer;*/
+    /*font-size: 15px;*/
+    /*font-weight: 700;*/
     width: 361px;
-    height: 37px;
-    background-color: #ACA0EB;
-    color: white;
+    height: 50px;
+    background-color: #F7F7F7;
+    color: #B7B7B7;
     border: none;
-    border-radius: 5px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+    margin-top: 5px;
+    z-index: 3;
+}
+
+.signup-btn.valid {
+    /*background-color: #7F6AEE;*/
+    color: #333333;
+    background-color: #FFC700;
+}
+
+.signup-btn.valid:active {
+    background-color: #ECAA00;
+}
+
+.login-btn {
+    /*width: 346px;*/
+    /*height: 42px;*/
+    /*margin-top: 5px;*/
+    /*border: 1px solid #8a6cf5;*/
+    /*background-color: transparent;*/
+    /*color: black;*/
+    /*border-radius: 4px;*/
+    /*cursor: pointer;*/
+    /*font-size: 13px;*/
+    width: 361px;
+    height: 50px;
+    border: 1px solid #E2E2E2;
+    background-color: transparent;
+    color: black;
+    border-radius: 12px;
     cursor: pointer;
     font-size: 15px;
     font-weight: 700;
 }
 
-.signup-btn.valid {
-    background-color: #7F6AEE;
-}
-
-.login-btn {
-    width: 346px;
-    height: 42px;
-    margin-top: 5px;
-    border: 1px solid #8a6cf5;
-    background-color: transparent;
-    color: black;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 13px;
+.login-btn:active {
+    background-color: #F7F7F7;
 }

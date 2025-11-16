@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/src/pages/styles/header.css"/>
     <link rel="stylesheet" href="/src/components/styles/modal.css">
     <link rel="stylesheet" href="/src/components/styles/comment.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
 </head>
 <body>
 <div id="header"></div>
@@ -22,6 +23,14 @@
         </div>
     </div>
 </div>
+
+<div class="division-bar"></div>
+
+<!--<div id="comment-info" class="comment-info">-->
+<!--    <img src="/src/assets/comment.svg" alt="comment">-->
+<!--    <span>댓글</span>-->
+<!--    <span id="comment-count"></span>-->
+<!--</div>-->
 
 <div id="comment-list" class="comment-list"></div>
 <div id="observer" class="observer"></div>
@@ -170,6 +179,9 @@
 
         document.getElementById("post-detail").innerHTML = PostDetail(postLike, postDetail);
 
+        // const commentCount = document.getElementById("comment-count");
+        // commentCount.innerText = postDetail.commentCount;
+
         addDeletePostEvent();
         addUpdatePostEvent();
         addLikeEvent(postLike);
@@ -199,13 +211,13 @@
 
         if (commentList.length === 0) {
             observer.disconnect();
+            return;
         }
 
+        lastCommentId = commentList[commentList.length - 1].id;
+
         const commentListHTML = commentList
-            .map(comment => {
-                lastCommentId = comment.id;
-                return Comment(comment);
-            })
+            .map(comment => Comment(comment))
             .join("");
 
         document.getElementById("comment-list").innerHTML += commentListHTML;

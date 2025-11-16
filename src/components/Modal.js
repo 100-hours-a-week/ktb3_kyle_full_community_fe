@@ -3,6 +3,7 @@ export const Modal = (title, text) => {
         `
             <div class="modal-overlay hidden">
                 <div class="modal">
+                <img src="/src/assets/warning-fill.svg" alt="warning">
                     <h3 class="modal-title">${title}</h3>
                     <p class="modal-text">${text}</p>
 

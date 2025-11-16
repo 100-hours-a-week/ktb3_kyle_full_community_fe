@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="/src/pages/styles/profile-update.css"/>
     <link rel="stylesheet" href="/src/pages/styles/header.css"/>
     <link rel="stylesheet" href="/src/components/styles/modal.css">
+    <link rel="stylesheet" href="/src/components/styles/toast.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
 </head>
 <body>
 <div id="header"></div>
@@ -26,17 +28,21 @@
             <label for="email">이메일</label>
             <div id="email" class="email-box"></div>
 
-            <label for="nickname">닉네임</label>
-            <input type="text" id="nickname" placeholder="닉네임을 입력하세요"/>
-            <p id="nickname-helper" class="helper-text"></p>
+            <div id="nickname-input"></div>
+<!--            <label for="nickname">닉네임</label>-->
+<!--            <input type="text" id="nickname" placeholder="닉네임을 입력하세요"/>-->
+<!--            <p id="nickname-helper" class="helper-text"></p>-->
         </div>
 
-        <button id="update-button" class="update-btn">수정하기</button>
+        <div style="position: relative">
+            <button id="update-button" class="update-btn" disabled>수정하기</button>
+            <div id="toast-container"></div>
+        </div>
 
         <button id="withdraw-button" class="withdraw-btn">회원 탈퇴
         </button>
 
-        <div id="toast" class="toast">수정완료</div>
+<!--        <div id="toast" class="toast">수정완료</div>-->
     </div>
 </div>
 <script type="module">
@@ -44,6 +50,20 @@
     import { Dropdown } from "../utils/Dropdown.js";
     import { Modal } from "../components/Modal.js";
     import { GOOGLE_STORAGE_URL, API_BASE_URL } from "../utils/config.js";
+    import { Input } from "../components/Input.js";
+    import { Toast } from "../components/Toast.js";
+
+    const toastContainer = document.getElementById("toast-container");
+    toastContainer.innerHTML = Toast();
+
+    document.getElementById("nickname-input").innerHTML = Input({
+        label: "닉네임",
+        inputId: "nickname",
+        type: "text",
+        placeholder: "",
+        helperId: "nickname-helper",
+        helperText: ""
+    });
 
     const imageState = {
         image: null
@@ -72,6 +92,28 @@
         imageBox.classList.add('has-image');
     }
 
+    const showToast = (message) => {
+        const toast = document.querySelector(".toast");
+        const toastMessage = document.getElementById("toast-message");
+        toast.classList.add("active");
+        toastMessage.innerText = message;
+        setTimeout(() => {
+            toast.classList.remove("active");
+        }, 2000);
+    }
+
+    const checkNicknameDuplicate = (nickname) => {
+        return fetch(`${API_BASE_URL}/users/nickname/duplicate?nickname=${nickname}`)
+            .then(res => res.json())
+            .then(json => json.data);
+    }
+
+    const validationFail = () => {
+        updateButton.disabled = true;
+        updateButton.classList.remove("valid");
+    }
+    const inputBox = document.querySelector(".input-box");
+
     const getUserProfile = async () => {
         const user = await api.get(`/users/profile`)
             .then((res) => res.json())
@@ -82,6 +124,32 @@
 
         const nickname = document.getElementById("nickname");
         nickname.value = user.nickname;
+
+        nickname.onfocus = () => inputBox.classList.add("focus");
+
+        nickname.onblur = async () => {
+            validationFail();
+            inputBox.classList.remove("focus");
+
+            if (nickname.value.length === 0) {
+                showToast("닉네임을 입력해주세요.");
+                return;
+            }
+
+            if (nickname.value.length > 10) {
+                showToast("닉네임은 최대 10자 까지 작성 가능합니다.");
+                return;
+            }
+
+            const duplicate = await checkNicknameDuplicate(nickname.value);
+            if (duplicate) {
+                showToast("중복된 닉네임 입니다.");
+                return
+            }
+
+            updateButton.disabled = false;
+            updateButton.classList.add("valid");
+        }
 
         if (user.profileImage !== null) {
             const image = document.querySelector(".image-upload");
@@ -94,16 +162,6 @@
     const updateProfile = async () => {
         const nickname = document.getElementById("nickname");
         const helper = document.getElementById("nickname-helper");
-
-        if (nickname.value.length === 0) {
-            helper.innerText = "*닉네임을 입력해주세요."
-            return;
-        }
-
-        if (nickname.value.length > 10) {
-            helper.innerText = "*닉네임은 최대 10자 까지 작성 가능합니다."
-            return;
-        }
 
         const formData = new FormData();
         formData.append(
@@ -123,17 +181,19 @@
             .then((res) => res.json())
             .then((json) => {
                 if (json.success) {
-                    const toast = document.getElementById("toast");
-                    helper.innerText = "";
-                    toast.classList.add("show");
-
-                    setTimeout(() => {
-                        toast.classList.remove("show");
-                        location.href = "http://localhost:3000/src/pages/post-list.html";
-                    }, 2000);
+                    location.href = "http://localhost:3000/src/pages/post-list.html";
+                    // const toast = document.getElementById("toast");
+                    // helper.innerText = "";
+                    // toast.classList.add("show");
+                    //
+                    // setTimeout(() => {
+                    //     toast.classList.remove("show");
+                    //     location.href = "http://localhost:3000/src/pages/post-list.html";
+                    // }, 2000);
                 }
                 if (json.httpStatus === "CONFLICT") {
-                    helper.innerText = "*중복된 닉네임 입니다.";
+                    showToast("중복된 닉네임 입니다.");
+                    // helper.innerText = "*중복된 닉네임 입니다.";
                 }
             })
     }
@@ -176,7 +236,7 @@
     withdrawButton.onclick = () => showModal({
         title: "회원탈퇴 하시겠습니까?",
         text: "작성된 게시글과 댓글은 삭제됩니다."
-    }, () => withdraw())
+    }, () => withdraw());
 
     fetch("/src/components/header.html")
         .then(res => res.text())

@@ -3,7 +3,7 @@ body, html {
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: "Noto Sans KR", sans-serif;
+    font-family: "Pretendard", sans-serif;
 }
 
 .container {
@@ -12,7 +12,7 @@ body, html {
     align-items: center;
     justify-content: center;
     height: 100%;
-    background-color: #f6f6f9;
+    background-color: white;
 }
 
 /* 상단 제목 */
@@ -85,12 +85,27 @@ body, html {
 .input-wrapper input {
     width: 355px;
     height: 33px;
-    line-height: 33px;
-    box-sizing: border-box;
-    padding: 8px;
-    border: 1px solid #000000;
-    border-radius: 6px;
+    border: none;
     margin-top: 10px;
+    outline: none;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 24px;
+    ::placeholder {
+        color: #B7B7B7;
+    }
+}
+
+.input-box {
+    width: 355px;
+    height: 45px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #E2E2E2;
+    transition: border-color 0.3s;
+}
+
+.input-box.focus {
+    border-bottom: 2px solid #ECAA00;
 }
 
 /* 변경 버튼 */
@@ -137,57 +152,39 @@ body, html {
 
 .update-btn {
     width: 361px;
-    height: 37px;
-    background-color: #ACA0EB;
-    color: white;
+    height: 50px;
+    background-color: #F7F7F7;
+    color: #B7B7B7;
     border: none;
-    border-radius: 5px;
+    border-radius: 12px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 700;
+    z-index: 3;
 }
 
 .update-btn.valid {
-    background-color: #7F6AEE;
+    color: #333333;
+    background-color: #FFC700;
+}
+
+.update-btn.valid:active {
+    background-color: #ECAA00;
 }
 
 .withdraw-btn {
-    width: 346px;
-    height: 42px;
-    margin-top: 5px;
-    border: 1px solid #8a6cf5;
+    width: 361px;
+    height: 50px;
+    /*margin-top: 5px;*/
+    border: 1px solid #E2E2E2;
     background-color: transparent;
     color: black;
-    border-radius: 4px;
+    border-radius: 12px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 15px;
+    font-weight: 700;
 }
 
-.toast {
-    position: fixed;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-
-    width: 102px;
-    height: 46px;
-    background-color: #aca0eb;
-    color: white;
-    font-size: 18px;
-    font-weight: 400;
-    text-align: center;
-    line-height: 46px;
-
-    border-radius: 23px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-    z-index: 1000;
-}
-
-.toast.show {
-    opacity: 1;
-    visibility: visible;
+.withdraw-btn:active {
+    background-color: #F7F7F7;
 }

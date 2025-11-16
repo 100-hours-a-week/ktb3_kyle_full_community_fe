@@ -5,6 +5,8 @@
     <title>게시글 작성</title>
     <link rel="stylesheet" href="/src/pages/styles/post-create.css"/>
     <link rel="stylesheet" href="/src/pages/styles/header.css"/>
+    <link rel="stylesheet" href="/src/components/styles/image-container.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
 </head>
 <body>
 <div id="header"></div>
@@ -21,16 +23,11 @@
     <div class="form-group">
         <label class="label-text">내용*</label>
         <textarea id="content" class="input-content" placeholder="내용을 입력해주세요."></textarea>
-        <p id="helper" class="helper-text">* 제목, 내용을 모두 작성해주세요.</p>
+        <p id="helper" class="helper-text">제목, 내용을 모두 작성해주세요.</p>
     </div>
 
     <!-- 이미지 -->
-    <div>
-        <label class="label-text">이미지</label>
-        <div class="image-input">
-            <input type="file" id="image-upload" accept="image/*" placeholder="파일을 선택새주세요." multiple>
-        </div>
-    </div>
+    <div id="image-container"></div>
 
     <!-- 완료 버튼 -->
     <button id="submit" class="submit-btn" disabled>완료</button>
@@ -38,36 +35,72 @@
 <script type="module">
     import { API_BASE_URL } from "../utils/config.js";
     import { Dropdown } from "../utils/Dropdown.js";
+    import { ImageContainer } from "../components/ImageContainer.js";
+    import { Image } from "../components/Image.js";
 
-    const inputSate = {
+    const inputState = {
         title: "",
         content: "",
         images: []
     };
 
+    document.getElementById("image-container").innerHTML = ImageContainer();
+
     const submit = document.getElementById("submit");
     submit.onclick = async () => {
-        const result = await createPost(inputSate);
+        const result = await createPost(inputState);
         if (result === true) {
             location.href = "http://localhost:3000/src/pages/post-list.html";
         }
     }
 
-    const imageInput = document.getElementById("image-upload");
-    imageInput.onchange = (event) => {
+    const imageInput = document.getElementById("image-input");
+    imageInput.onclick = () => imageUpload.click();
+
+    const imageUpload = document.getElementById("image-upload");
+    imageUpload.onchange = (event) => {
         const newImages = Array.from(event.target.files);
-        if (newImages.length !== 0) inputSate["images"] = newImages;
+        showSelectedImages(newImages);
+        if (newImages.length !== 0) inputState["images"] = newImages;
+    }
+
+    const removeSelectedImage = (indexToRemove) => {
+        inputState["images"] = inputState.images.filter((_, index) => index !== indexToRemove);
+        showSelectedImages(inputState.images);
+    }
+
+    const showSelectedImages = async (images) => {
+        const promises = images.map((image, index) => {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    resolve(Image({ id: index, url: e.target.result }));
+                };
+                reader.readAsDataURL(image);
+            })
+        })
+
+        const imageList = await Promise.all(promises);
+        document.getElementById("image-list").innerHTML = imageList.join("");
+
+        const cancelButtons = document.querySelectorAll(".image-cancel");
+        cancelButtons.forEach((button, index) => {
+            button.onclick = () => removeSelectedImage(index);
+        });
     }
 
     const createPost = ({ title, content }) => {
         const formData = new FormData();
         formData.append(
             "request",
-            new Blob([JSON.stringify({ title: title, content: content })], { type: "application/json" })
+            new Blob([JSON.stringify({
+                title: title,
+                content: content
+            })], { type: "application/json" })
         );
 
-        Object.values(inputSate.images).forEach(image => formData.append("images", image));
-        console.log(inputSate);
+        Object.values(inputState.images).forEach(image => formData.append("images", image));
+        console.log(inputState);
 
         console.log(formData.get("images"));
 
@@ -81,8 +114,8 @@
     }
 
     const checkInputState = () => {
-        const title = inputSate.title;
-        const content = inputSate.content;
+        const title = inputState.title;
+        const content = inputState.content;
         return title.length !== 0 && content.length !== 0;
     }
 
@@ -91,12 +124,13 @@
         const helper = document.getElementById("helper");
 
         input.addEventListener('blur', async () => {
-            inputSate[inputId] = input.value;
+            inputState[inputId] = input.value;
             const submitButton = document.querySelector(".submit-btn");
             const result = checkInputState();
             submitButton.classList.toggle("valid", result);
             submitButton.disabled = !result;
-            helper.innerText = result ? "" : "* 제목, 내용을 모두 입력해주세요.";
+            helper.classList.toggle("valid", result);
+            helper.innerText = result ? "작성 완료" : "제목, 내용을 모두 입력해주세요.";
         })
     }
 
