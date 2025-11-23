@@ -52,10 +52,21 @@ src/
 ## 기능 시연 영상
 ### 회원가입/로그인
 
+https://github.com/user-attachments/assets/7367dd3e-4a25-4dbc-aa4f-c90fa9c0c043
+
 ### 회원 정보 수정/비밀번호 수정/로그아웃
+
+https://github.com/user-attachments/assets/605ed585-3fdb-4582-b07d-973a4f55deac
+
 
 ### 게시글 목록 및 상세 정보 조회
 
+https://github.com/user-attachments/assets/e411d17e-0057-444f-ab67-b162b1d43791
+
 ### 게시글 생성/수정
 
+https://github.com/user-attachments/assets/d289b105-83f0-4765-8645-44c1cef75cd8
+
 ### 게시글 댓글 생성/수정/삭제
+
+https://github.com/user-attachments/assets/1e0c7140-9e3f-4db0-b16d-a6eb5cc0bb00
