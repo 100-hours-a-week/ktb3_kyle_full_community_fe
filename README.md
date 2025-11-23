@@ -52,7 +52,7 @@ src/
 ## 기능 시연 영상
 ### 회원가입/로그인
 
-https://github.com/user-attachments/assets/7367dd3e-4a25-4dbc-aa4f-c90fa9c0c043
+https://github.com/user-attachments/assets/6af348c8-88ef-463f-9466-05db61f28d67
 
 ### 회원 정보 수정/비밀번호 수정/로그아웃
 
