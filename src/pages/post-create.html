@@ -37,6 +37,7 @@
     import { Dropdown } from "../utils/Dropdown.js";
     import { ImageContainer } from "../components/ImageContainer.js";
     import { Image } from "../components/Image.js";
+    import Api from "../utils/Api.js";
 
     const inputState = {
         title: "",
@@ -104,13 +105,17 @@
 
         console.log(formData.get("images"));
 
-        return fetch(`${API_BASE_URL}/posts/image`, {
-            method: "POST",
-            credentials: "include",
-            body: formData
-        })
+        return Api.post(`/posts`, formData)
             .then(res => res.json())
-            .then(json => json.success)
+            .then(json => json.success);
+
+        // return fetch(`${API_BASE_URL}/posts`, {
+        //     method: "POST",
+        //     credentials: "include",
+        //     body: formData
+        // })
+        //     .then(res => res.json())
+        //     .then(json => json.success)
     }
 
     const checkInputState = () => {

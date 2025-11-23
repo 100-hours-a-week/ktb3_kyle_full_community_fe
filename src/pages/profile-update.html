@@ -173,27 +173,14 @@
         )
         formData.append("image", imageState.image);
 
-        await fetch(`${API_BASE_URL}/users/profile`, {
-            method: "PATCH",
-            credentials: "include",
-            body: formData
-        })
+        await api.patch(`/users/profile`, formData)
             .then((res) => res.json())
             .then((json) => {
                 if (json.success) {
                     location.href = "http://localhost:3000/src/pages/post-list.html";
-                    // const toast = document.getElementById("toast");
-                    // helper.innerText = "";
-                    // toast.classList.add("show");
-                    //
-                    // setTimeout(() => {
-                    //     toast.classList.remove("show");
-                    //     location.href = "http://localhost:3000/src/pages/post-list.html";
-                    // }, 2000);
                 }
                 if (json.httpStatus === "CONFLICT") {
                     showToast("중복된 닉네임 입니다.");
-                    // helper.innerText = "*중복된 닉네임 입니다.";
                 }
             })
     }

@@ -57,6 +57,7 @@
 <script type="module">
     import { API_BASE_URL } from "../utils/config.js";
     import { Dropdown } from "../utils/Dropdown.js";
+    import api from "../utils/Api.js";
 
     const inputState = {
         email: {
@@ -128,10 +129,7 @@
         console.log(inputState.profileImage.value)
         formData.append("image", inputState.profileImage.value);
 
-        return fetch(`${API_BASE_URL}/users`, {
-            method: "POST",
-            body: formData
-        })
+        return api.post(`/users`, formData)
             .then(res => res.json())
             .then(json => json.success)
     }
