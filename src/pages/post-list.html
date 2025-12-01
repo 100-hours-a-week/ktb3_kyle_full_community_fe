@@ -49,30 +49,60 @@
     });
     observer.observe(document.getElementById("observer"));
 
-    let lastPostId = 0;
+    const postInfiniteScroll = () => {
+        let lastPostId = null;
 
-    const getPostList = async (limit) => {
-        const path = lastPostId === 0 ?
-            `/posts?limit=${limit}` :
-            `/posts?limit=${limit}&lastPostId=${lastPostId}`;
+        return async (limit) => {
+            const path = lastPostId === null ?
+                `/posts?limit=${limit}` :
+                `/posts?limit=${limit}&lastPostId=${lastPostId}`;
 
-        const postList = await api.get(path)
-            .then((res) => res.json())
-            .then((json) => json.data);
+            const postList = await api.get(path)
+                .then((res) => res.json())
+                .then((json) => json.data);
 
-        console.log(postList);
+            console.log(postList);
 
-        if (postList.length === 0) {
-            observer.disconnect();
+            if (postList.length === 0) {
+                observer.disconnect();
+                return;
+            }
+
+            lastPostId = postList[postList.length - 1].id;
+            const postCardListHtml = postList
+                .map(post => PostCard(post))
+                .join("");
+
+            document.getElementById("post-card-list").insertAdjacentHTML('beforeend', postCardListHtml);
         }
-
-        lastPostId = postList[postList.length - 1].id;
-        const postCardListHtml = postList
-            .map(post => PostCard(post))
-            .join("");
-
-        document.getElementById("post-card-list").innerHTML += postCardListHtml
     }
+
+    const getPostList = postInfiniteScroll();
+
+    // let lastPostId = 0;
+
+    // const getPostList = async (limit) => {
+    //     const path = lastPostId === 0 ?
+    //         `/posts?limit=${limit}` :
+    //         `/posts?limit=${limit}&lastPostId=${lastPostId}`;
+    //
+    //     const postList = await api.get(path)
+    //         .then((res) => res.json())
+    //         .then((json) => json.data);
+    //
+    //     console.log(postList);
+    //
+    //     if (postList.length === 0) {
+    //         observer.disconnect();
+    //     }
+    //
+    //     lastPostId = postList[postList.length - 1].id;
+    //     const postCardListHtml = postList
+    //         .map(post => PostCard(post))
+    //         .join("");
+    //
+    //     document.getElementById("post-card-list").insertAdjacentHTML('beforeend', postCardListHtml);
+    // }
 
     fetch("/src/components/header.html")
         .then(res => res.text())
