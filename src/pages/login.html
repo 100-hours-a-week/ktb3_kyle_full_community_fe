@@ -65,24 +65,24 @@
         }
     }
 
-    const validationEmail = async (emailValue) => {
-        const success = (message) => ({ pass: true, message: message });
-        const fail = (message) => ({ pass: false, message: message });
-        const emailState = inputState['email'];
+    const success = (message) => ({ pass: true, message: message });
+    const fail = (message) => ({ pass: false, message: message });
 
+    const updateInputState = ({ target, value, valid }) => {
+        inputState[target]['value'] = value;
+        inputState[target]['valid'] = valid;
+    }
+
+    const validationEmail = async (emailValue) => {
         if (emailValue.length <= 0) {
-            emailState['valid'] = false;
             return fail("올바른 이메일 주소 형식을 입력해주세요");
         }
 
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
         if (!emailRegex.test(emailValue)) {
-            emailState['valid'] = false;
             return fail("올바른 이메일 주소 형식을 입력해주세요");
         }
 
-        emailState['valid'] = true;
-        emailState['value'] = emailValue;
         return success("");
     }
 
@@ -106,29 +106,19 @@
     }
 
     const validationPassword = (passwordValue) => {
-        const success = (message) => ({ pass: true, message: message });
-        const fail = (message) => ({ pass: false, message: message });
-        const passwordState = inputState['password'];
-
         if (passwordValue.length <= 0) {
-            passwordState['valid'] = false;
             return fail("비밀번호를 입력해주세요");
         }
 
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[~!@#$%^&*(),.?":{}|<>])[A-Za-z\d~!@#$%^&*(),.?":{}|<>]{8,20}$/;
         if (!passwordRegex.test(passwordValue)) {
-            passwordState['valid'] = false;
             return fail("비밀번호는 8자 이상, 20자 이하이며, 대문자, 소문자, 숫자, 특수문자를 각각 최소 1개 포함해야합니다");
         }
 
-        passwordState['valid'] = true;
-        passwordState['value'] = passwordValue;
         return success("");
     }
 
     const updateHelperText = (helper, { pass, message }) => {
-        //helper.innerText = message;
-        // toastContainer.innerHTML = Toast(message);
         const toast = document.querySelector(".toast");
         const toastMessage = document.getElementById("toast-message");
         toast.classList.toggle("active", !pass);
@@ -148,6 +138,11 @@
 
         input.addEventListener('blur', async () => {
             const result = await validation(input.value);
+            updateInputState({
+                target: inputId,
+                valid: result.pass,
+                value: input.value
+            });
             updateHelperText(helper, result);
             if (checkInputState()) {
                 const loginButton = document.querySelector(".login-btn");
